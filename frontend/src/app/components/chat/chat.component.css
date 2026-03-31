@@ -1,0 +1,235 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 520px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #fff;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  background: #1a1a2e;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.header .title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.error-banner {
+  padding: 10px 20px;
+  background: #d32f2f;
+  color: #fff;
+  font-size: 0.85rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.coming-soon-banner {
+  padding: 8px;
+  background: #ff9800;
+  color: #fff;
+  font-size: 0.85rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f5f5f5;
+}
+
+.message {
+  display: flex;
+  max-width: 85%;
+}
+
+.message.user {
+  align-self: flex-end;
+}
+
+.message.assistant {
+  align-self: flex-start;
+}
+
+.message-bubble {
+  padding: 10px 16px;
+  border-radius: 12px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 0.95rem;
+}
+
+.message.user .message-bubble {
+  background: #1976d2;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.message.assistant .message-bubble {
+  background: #e0e0e0;
+  color: #212121;
+  border-bottom-left-radius: 4px;
+}
+
+.message.assistant .message-bubble ul,
+.message.assistant .message-bubble ol {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+.message.assistant .message-bubble li {
+  margin: 2px 0;
+}
+
+.message.assistant .message-bubble br {
+  display: block;
+  content: "";
+  margin: 4px 0;
+}
+
+.message.assistant .message-bubble pre {
+  background: #263238;
+  color: #e0e0e0;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+.message.assistant .message-bubble code {
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.875em;
+}
+
+.message.assistant .message-bubble pre code {
+  background: none;
+  padding: 0;
+}
+
+.message.assistant .message-bubble :not(pre) > code {
+  background: rgba(0, 0, 0, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  align-self: flex-start;
+}
+
+.typing-indicator .dot {
+  width: 8px;
+  height: 8px;
+  background: #9e9e9e;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.input-area {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: #fff;
+  border-top: 1px solid #e8e8e8;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.message-input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #f9f9f9;
+}
+
+.message-input:focus {
+  border-color: #1976d2;
+  background: #fff;
+}
+
+.message-input:disabled {
+  background: #f0f0f0;
+}
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+.icon-btn:active {
+  transform: scale(0.93);
+}
+
+.icon-btn.send-btn {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.icon-btn.send-btn:hover:not(:disabled) {
+  background: #2a2a4e;
+}
+
+.icon-btn.send-btn:disabled {
+  background: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.icon-btn.phone-btn {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.icon-btn.phone-btn:hover {
+  background: #2a2a4e;
+}
+
+.message.assistant .message-bubble a {
+  color: #1565c0;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.message.assistant .message-bubble a:hover {
+  text-decoration: underline;
+}

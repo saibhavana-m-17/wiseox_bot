@@ -1,0 +1,66 @@
+<div class="chat-container">
+  <div class="header">
+    <h1 class="title">WiseOx</h1>
+  </div>
+
+  <div class="coming-soon-banner" *ngIf="showComingSoon">
+    Coming soon!
+  </div>
+
+  <div class="error-banner" *ngIf="error$ | async as errorMsg">
+    {{ errorMsg }}
+  </div>
+
+  <div class="messages" #messagesContainer>
+    <div
+      *ngFor="let msg of messages$ | async"
+      class="message"
+      [ngClass]="msg.role"
+    >
+      <div class="message-bubble" *ngIf="msg.role === 'user'">
+        {{ msg.content }}
+      </div>
+      <div
+        class="message-bubble"
+        *ngIf="msg.role === 'assistant' && msg.content"
+        [innerHTML]="msg.content | markdown"
+      ></div>
+    </div>
+
+    <div class="typing-indicator" *ngIf="isStreaming$ | async">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <input
+      type="text"
+      class="message-input"
+      placeholder="Type a message..."
+      [(ngModel)]="inputText"
+      (keydown)="onKeyDown($event)"
+      [disabled]="!!(isStreaming$ | async)"
+    />
+    <button
+      class="icon-btn send-btn"
+      (click)="sendMessage()"
+      [disabled]="!!(isStreaming$ | async) || !inputText.trim()"
+      title="Send"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+    <button
+      class="icon-btn phone-btn"
+      (click)="onPhoneClick()"
+      title="Call"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z"/>
+      </svg>
+    </button>
+  </div>
+</div>
