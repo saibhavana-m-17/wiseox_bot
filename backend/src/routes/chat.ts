@@ -8,10 +8,11 @@ import {
   Message,
 } from '../models/conversation';
 import { Config } from '../config';
+import { SystemPromptBuilder } from '../services/system-prompt';
 
 export function createChatRouter(
   anthropicClient: Anthropic,
-  systemPrompt: string,
+  promptBuilder: SystemPromptBuilder,
   config: Config
 ): Router {
   const router = Router();
@@ -59,7 +60,8 @@ export function createChatRouter(
         { role: 'user' as const, content: message.trim() },
       ];
 
-      // Stream response from Claude
+      // Stream response from Claude — build focused prompt for this query
+      const systemPrompt = promptBuilder.getPromptForQuery(message.trim());
       let fullResponse = '';
 
       try {

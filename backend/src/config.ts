@@ -5,6 +5,12 @@ export interface Config {
   mongodbUrl: string;
   port: number;
   knowledgeBasePath: string;
+  awsAccessKeyId: string;
+  awsSecretAccessKey: string;
+  awsRegion: string;
+  deepgramApiKey: string;
+  elevenlabsApiKey: string;
+  elevenlabsVoiceId: string;
 }
 
 export function loadConfig(): Config {
@@ -23,5 +29,11 @@ export function loadConfig(): Config {
     mongodbUrl: process.env.MONGODB_URL || 'mongodb://localhost:27017/wiseox',
     port: parseInt(process.env.PORT || '3000', 10),
     knowledgeBasePath: process.env.KNOWLEDGE_BASE_PATH || '../knowledge_base',
+    awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    awsRegion: process.env.AWS_REGION || 'us-east-1',
+    deepgramApiKey: process.env.DEEPGRAM_API_KEY || '',
+    elevenlabsApiKey: process.env.ELEVENLABS_API_KEY || '',
+    elevenlabsVoiceId: process.env.ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM',
   };
 }

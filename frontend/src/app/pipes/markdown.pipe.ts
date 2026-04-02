@@ -5,7 +5,8 @@ export class MarkdownPipe implements PipeTransform {
   transform(value: string): string {
     if (!value) return '';
     try {
-      let html = value;
+      // Strip emoji characters from the response
+      let html = value.replace(/\p{Emoji_Presentation}/gu, '').replace(/\p{Extended_Pictographic}/gu, '');
 
       // Code blocks (``` ... ```)
       html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');

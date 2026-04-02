@@ -1,10 +1,37 @@
 <div class="chat-container">
-  <div class="header">
-    <h1 class="title">WiseOx</h1>
+  <!-- Voice Call Overlay -->
+  <div class="call-overlay" *ngIf="callActive">
+    <div class="call-content">
+      <div class="call-circle" [class.listening]="callStatus === 'Listening...'" [class.speaking]="callStatus === 'Speaking...'" [class.processing]="callStatus === 'Processing...'">
+        <div class="circle-ring"></div>
+        <div class="circle-ring"></div>
+        <div class="circle-core">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="call-status-text">{{ callStatus }}</div>
+      <div class="call-transcript" *ngIf="voiceTranscript">"{{ voiceTranscript }}"</div>
+      <div class="call-hint" *ngIf="!isSpeaking">Just start speaking</div>
+      <button class="call-stop-btn" *ngIf="isSpeaking" (click)="stopSpeaking()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6 6h12v12H6z"/>
+        </svg>
+        Speak to interrupt
+      </button>
+      <button class="call-end-btn" (click)="endCall()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.956.956 0 010-1.36C3.69 8.68 7.62 7 12 7s8.31 1.68 11.71 4.72c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28a11.27 11.27 0 00-2.67-1.85.996.996 0 01-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
+        </svg>
+        End Call
+      </button>
+    </div>
   </div>
 
-  <div class="coming-soon-banner" *ngIf="showComingSoon">
-    Coming soon!
+  <div class="header">
+    <h1 class="title">WiseOx</h1>
   </div>
 
   <div class="error-banner" *ngIf="error$ | async as errorMsg">
@@ -12,6 +39,19 @@
   </div>
 
   <div class="messages" #messagesContainer>
+    <div class="welcome-message" *ngIf="(messages$ | async)?.length === 0 && voiceMessages.length === 0">
+      <div class="welcome-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
+          <path d="M7 9h10v2H7zm0-3h10v2H7z"/>
+        </svg>
+      </div>
+      <div class="welcome-text">Hi! How can I help you today?</div>
+      <div class="welcome-hint">Ask me anything about AccuShield</div>
+    </div>
+
+    <div class="messages-spacer" *ngIf="(messages$ | async)?.length! > 0 || voiceMessages.length > 0"></div>
+
     <div
       *ngFor="let msg of messages$ | async"
       class="message"
@@ -31,6 +71,12 @@
       <span class="dot"></span>
       <span class="dot"></span>
       <span class="dot"></span>
+    </div>
+
+    <div *ngFor="let msg of voiceMessages" class="message" [ngClass]="msg.role">
+      <div class="message-bubble">
+        {{ msg.content }}
+      </div>
     </div>
   </div>
 
