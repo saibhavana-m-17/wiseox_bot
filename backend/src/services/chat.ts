@@ -66,6 +66,14 @@ export async function* streamChatResponse(
           yield { type: 'text_delta', delta: event.delta.text } as SSETextDelta;
         }
       }
+
+      // Log the final message for debugging
+      try {
+        const finalMessage = await stream.finalMessage();
+        console.log(`[Claude] Stop reason: ${finalMessage.stop_reason}, usage: input=${finalMessage.usage.input_tokens} output=${finalMessage.usage.output_tokens}`);
+      } catch (e) {
+        console.error('[Claude] Could not get final message:', e);
+      }
     } finally {
       if (abortSignal) {
         abortSignal.removeEventListener('abort', onAbort);
@@ -77,6 +85,7 @@ export async function* streamChatResponse(
       return;
     }
 
+    console.error('[Claude] Stream error:', error);
     const message =
       error instanceof Error ? error.message : 'An unexpected error occurred';
     yield { type: 'error', message } as SSEError;

@@ -30,7 +30,7 @@ async function main(): Promise<void> {
   const promptBuilder = new SystemPromptBuilder(config.knowledgeBasePath);
   await promptBuilder.build();
 
-  const anthropicClient = new Anthropic({ apiKey: config.anthropicApiKey });
+  const anthropicClient = new Anthropic({ apiKey: config.anthropicApiKey, timeout: 60000 });
 
   const app = express();
   app.use(cors());

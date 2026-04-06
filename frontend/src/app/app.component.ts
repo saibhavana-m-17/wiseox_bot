@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `
     <div class="branding">
       <h1 class="brand-title">AccuShield</h1>
-      <p class="brand-subtitle">AI-Powered Knowledge Assistant</p>
+      <p class="brand-subtitle">AccuShield Assist</p>
     </div>
     <div class="chat-wrapper" *ngIf="chatOpen">
       <app-chat></app-chat>

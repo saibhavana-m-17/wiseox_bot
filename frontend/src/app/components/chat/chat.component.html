@@ -31,7 +31,7 @@
   </div>
 
   <div class="header">
-    <h1 class="title">WiseOx</h1>
+    <h1 class="title">AccuShield Assist</h1>
   </div>
 
   <div class="error-banner" *ngIf="error$ | async as errorMsg">
@@ -81,7 +81,9 @@
   </div>
 
   <div class="input-area">
+    <!-- Normal input mode -->
     <input
+      *ngIf="!isRecording"
       type="text"
       class="message-input"
       placeholder="Type a message..."
@@ -89,7 +91,16 @@
       (keydown)="onKeyDown($event)"
       [disabled]="!!(isStreaming$ | async)"
     />
+
+    <!-- Recording mode -->
+    <div class="recording-bar" *ngIf="isRecording">
+      <span class="rec-dot"></span>
+      <span class="rec-text">{{ inputText || 'Listening...' }}</span>
+    </div>
+
     <button
+      *ngIf="!isRecording"
+      type="button"
       class="icon-btn send-btn"
       (click)="sendMessage()"
       [disabled]="!!(isStreaming$ | async) || !inputText.trim()"
@@ -100,12 +111,19 @@
       </svg>
     </button>
     <button
-      class="icon-btn phone-btn"
-      (click)="onPhoneClick()"
-      title="Call"
+      type="button"
+      class="icon-btn mic-btn"
+      (click)="onMicClick()"
+      [class.recording]="isRecording"
+      [disabled]="!!(isStreaming$ | async)"
+      title="Voice input"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z"/>
+      <svg *ngIf="!isRecording" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+      </svg>
+      <svg *ngIf="isRecording" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6 6h12v12H6z"/>
       </svg>
     </button>
   </div>

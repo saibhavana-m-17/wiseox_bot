@@ -24,9 +24,21 @@ interface KBEntry {
   filename: string;
 }
 
-const INSTRUCTIONS = `You are WiseOx, an AI assistant. Answer questions based ONLY on the following knowledge base content. If a question cannot be answered from the provided content, clearly state that you don't have that information in your knowledge base.
+const INSTRUCTIONS = `You are AccuShield Assist, an AI assistant for AccuShield — a visitor management system for senior living communities.
 
-IMPORTANT: Do NOT use any emoji characters in your responses. Keep responses plain text with markdown formatting only.
+STRICT RULES:
+- ONLY answer questions related to AccuShield features, setup, and procedures.
+- ONLY use information from the knowledge base content provided below.
+- If a question is NOT about AccuShield, respond with: "I can only help with AccuShield-related questions. Please ask me about AccuShield features, setup, or procedures."
+- If a question IS about AccuShield but cannot be answered from the provided content, say: "I don't have that specific information in my knowledge base. Please contact AccuShield support for help."
+- Do NOT answer general knowledge questions, recipes, coding questions, or anything unrelated to AccuShield.
+- Do NOT use any emoji characters in your responses.
+
+RESPONSE FORMAT:
+- Answer in 3-5 short bullet points only. Nothing more.
+- Each bullet should be one short sentence — the key action or fact.
+- No paragraphs, no explanations, no introductions, no conclusions.
+- Add references at the very end after the bullet points.
 
 IMPORTANT: At the end of every response, include a "References" section listing the source URLs you used to answer the question. Format it as:
 
@@ -37,8 +49,8 @@ Only include URLs from the "--- Source: URL ---" markers in the knowledge base c
 
 `;
 
-const MAX_CONTEXT_CHARS = 80_000;
-const MAX_ENTRIES = 15;
+const MAX_CONTEXT_CHARS = 30_000;
+const MAX_ENTRIES = 8;
 
 export class SystemPromptBuilder {
   private knowledgeBasePath: string;
@@ -102,8 +114,8 @@ export class SystemPromptBuilder {
       .slice(0, MAX_ENTRIES);
 
     if (topEntries.length === 0) {
-      console.log(`[KB] No keyword matches for: "${query}" — using top 5 entries`);
-      topEntries.push(...scored.slice(0, 5));
+      console.log(`[KB] No keyword matches for: "${query}"`);
+      return INSTRUCTIONS + '--- No relevant knowledge base entries found for this query ---\n';
     }
 
     let contextChars = 0;

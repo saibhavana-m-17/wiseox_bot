@@ -19,6 +19,7 @@ export function createChatRouter(
 
   router.post('/api/chat', async (req: Request, res: Response) => {
     const { message, conversationId } = req.body;
+    const startTime = Date.now();
 
     // Validate message
     if (!message || typeof message !== 'string' || message.trim() === '') {
@@ -90,6 +91,35 @@ export function createChatRouter(
           return;
         }
 
+        // Handle empty response from Claude
+        if (!fullResponse.trim()) {
+          console.warn(`[CHAT] Empty response from Claude for: "${message.trim().substring(0, 50)}" — retrying in 2s`);
+          // Wait before retry to let network recover
+          await new Promise(r => setTimeout(r, 2000));
+          // Retry once with the same prompt
+          const retryStream = streamChatResponse(anthropicClient, {
+            systemPrompt,
+            messages,
+            model: config.claudeModel,
+            maxTokens: config.anthropicMaxTokens,
+            abortSignal: abortController.signal,
+          });
+          for await (const event of retryStream) {
+            if (abortController.signal.aborted) break;
+            if (event.type === 'text_delta') fullResponse += event.delta;
+            res.write(`data: ${JSON.stringify(event)}\n\n`);
+          }
+          if (abortController.signal.aborted) return;
+        }
+
+        // Still empty after retry
+        if (!fullResponse.trim()) {
+          console.warn(`[CHAT] Still empty after retry for: "${message.trim().substring(0, 50)}"`);
+          const fallback: SSEEvent = { type: 'text_delta', delta: 'Sorry, I was unable to generate a response. Please try asking your question again.' };
+          res.write(`data: ${JSON.stringify(fallback)}\n\n`);
+          fullResponse = 'Sorry, I was unable to generate a response. Please try asking your question again.';
+        }
+
         // Persist user message + assistant response to MongoDB
         const now = new Date();
         const newMessages: Message[] = [
@@ -97,6 +127,7 @@ export function createChatRouter(
           { role: 'assistant', content: fullResponse, timestamp: now },
         ];
         await appendMessages(conversation.conversationId, newMessages);
+        console.log(`[CHAT] Success - ${fullResponse.length} chars, ${Date.now() - startTime}ms`);
 
         // Send done event with conversationId
         const doneEvent: SSEEvent = {
